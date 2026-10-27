@@ -3,6 +3,11 @@ from .models import Vehiculo, Mantenimiento, RegistroCaja, FondoJefe, Sugerencia
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from .forms import MantenimientoForm
+from django.contrib.auth import logout
+
+def cerrar_sesion(request):
+    logout(request)
+    return redirect('/admin/login/')
 
 @login_required # Esto asegura que solo tú (o alguien logueado) pueda registrar mantenimientos
 def registrar_mantenimiento(request):
