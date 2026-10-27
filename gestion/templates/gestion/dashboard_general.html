@@ -11,7 +11,7 @@
         <span class="navbar-brand mb-0 h1">🚀 Sistema de Gestión - Parque</span>
         <div>
             <span class="text-white me-3">👤 Usuario: {{ request.user.username }}</span>
-            <a href="/admin/logout/" class="btn btn-outline-light btn-sm">Cerrar Sesión</a>
+            <a href="{% url 'logout' %}" class="btn btn-outline-light btn-sm">Cerrar Sesión</a>
         </div>
     </nav>
 

@@ -8,5 +8,6 @@ urlpatterns = [
     path('sugerencia/nueva/', views.crear_sugerencia, name='crear_sugerencia'),
     path('fondo/nuevo/', views.crear_fondo, name='crear_fondo'),
     path('dashboard/', views.router_por_rol, name='dashboard_general'),
+    path('logout/', views.cerrar_sesion, name='logout'),
 ]
 
