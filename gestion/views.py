@@ -92,3 +92,14 @@ def crear_fondo(request):
         if monto and descripcion:
             FondoJefe.objects.create(monto=monto, descripcion=descripcion, jefe=request.user)
     return redirect('dashboard_general')
+
+@login_required
+def router_por_rol(request):
+    # Si es superusuario o pertenece al grupo Jefe
+    if request.user.is_superuser or request.user.groups.filter(name='Jefe').exists():
+        return redirect('dashboard_general') # O una vista exclusiva de jefe
+    elif request.user.groups.filter(name='Secretaria').exists():
+        return redirect('dashboard_caja')
+    else:
+        # Por defecto para técnico / mantenimiento
+        return redirect('nuevo_mantenimiento')
