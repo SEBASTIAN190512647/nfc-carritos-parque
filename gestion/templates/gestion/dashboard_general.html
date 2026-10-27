@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>Panel de Control - Parque</title>
+</head>
+<body class="bg-light">
+    <nav class="navbar navbar-dark bg-dark px-4 mb-4">
+        <span class="navbar-brand mb-0 h1">🚀 Sistema de Gestión - Parque</span>
+        <div>
+            <span class="text-white me-3">👤 Usuario: {{ request.user.username }}</span>
+            <a href="/admin/logout/" class="btn btn-outline-light btn-sm">Cerrar Sesión</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- SECCIÓN DE FINANZAS Y CAPITAL (Visible para el Jefe y Admin) -->
+        <div class="row mb-4">
+            <div class="col-md-7">
+                <div class="card shadow-sm border-0 rounded-4 p-4 bg-white h-100">
+                    <h4 class="text-success mb-3">💰 Control Financiero y Capital</h4>
+                    <p class="text-muted mb-1">Total de fondos inyectados al proyecto:</p>
+                    <h2 class="fw-bold text-dark display-6 mb-3">$ {{ total_fondos|default:"0.00" }}</h2>
+                    
+                    <hr>
+                    <h6 class="text-secondary fw-bold mb-2">📋 Historial de Depósitos:</h6>
+                    <div class="table-responsive" style="max-height: 180px; overflow-y: auto;">
+                        <table class="table table-sm table-hover align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Fecha</th>
+                                    <th>Descripción</th>
+                                    <th>Monto</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for fondo in fondos %}
+                                <tr>
+                                    <td><small>{{ fondo.fecha|date:"d/m/Y" }}</small></td>
+                                    <td><small>{{ fondo.descripcion }}</small></td>
+                                    <td><strong>$ {{ fondo.monto }}</strong></td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="3" class="text-muted text-center"><small>No hay depósitos registrados aún.</small></td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Formulario exclusivo para que el Jefe registre fondos al instante -->
+            <div class="col-md-5">
+                <div class="card shadow-sm border-0 rounded-4 p-4 bg-white h-100">
+                    <h5 class="text-primary mb-3">➕ Registrar Nuevo Capital</h5>
+                    <form method="POST" action="{% url 'crear_fondo' %}">
+                        {% csrf_token %}
+                        <div class="mb-2">
+                            <input type="number" step="0.01" name="monto" class="form-control form-control-sm" placeholder="Monto en $ (Ej: 50.00)" required>
+                        </div>
+                        <div class="mb-2">
+                            <input type="text" name="descripcion" class="form-control form-control-sm" placeholder="Motivo (Ej: Repuestos Halloween)" required>
+                        </div>
+                        <button type="submit" class="btn btn-success btn-sm w-100 fw-bold">Enviar Fondo</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECCIÓN DE SUGERENCIAS E INNOVACIÓN (Tus ideas de Mantenimiento) -->
+        <div class="row mb-4">
+            <div class="col-md-12">
+                <div class="card shadow-sm border-0 rounded-4 p-4 bg-white">
+                    <h4 class="text-primary mb-3">💡 Ideas y Sugerencias Técnicas (Innovación)</h4>
+                    <form method="POST" action="{% url 'crear_sugerencia' %}" class="mb-3">
+                        {% csrf_token %}
+                        <div class="mb-2">
+                            <input type="text" name="titulo" class="form-control" placeholder="Título de la idea (Ej: Sistema de audio Bluetooth monstruoso)" required>
+                        </div>
+                        <div class="mb-2">
+                            <textarea name="idea" class="form-control" rows="2" placeholder="Describe tu propuesta técnica..." required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-dark btn-sm">Publicar Sugerencia</button>
+                    </form>
+                    <hr>
+                    <ul class="list-group list-group-flush">
+                
+                        {% for sug in sugerencias %}
+                            <li class="list-group-item">
+                                <strong class="text-primary">{{ sug.titulo }}</strong>: {{ sug.idea }} <br>
+                                <small class="text-muted">Propuesto por: <strong>{{ sug.autor.username }}</strong> el {{ sug.fecha|date:"d/m/Y H:i" }}</small>
+                            </li>
+                        {% empty %}
+                            <li class="list-group-item text-muted">No hay sugerencias registradas aún.</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

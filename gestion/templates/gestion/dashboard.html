@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="es">
+<head><title>Cuadre de Caja - Mantenimiento</title></head>
+<body style="font-family: Arial; padding: 20px; background-color: #f0f2f5;">
+    <div style="background: white; padding: 20px; border-radius: 10px; max-width: 600px; margin: auto;">
+        <h2>📊 Reporte Mensual de Gastos Técnicos</h2>
+        <p><strong>Total Repuestos:</strong> $ {{ total_repuestos }}</p>
+        <p><strong>Total Honorarios (Tus ingresos):</strong> $ {{ total_honorarios }}</p>
+        <h3 style="color: #d93025;">Costo Total del Mes: $ {{ total_gastos }}</h3>
+        
+        <hr>
+        <h4>Detalle de Intervenciones:</h4>
+        <ul>
+            {% for item in mantenimientos %}
+                <li>{{ item.fecha|date:"d/m/Y" }} - {{ item.vehiculo.nombre }}: $ {{ item.costo_total }}</li>
+            {% empty %}
+                <li>No hay mantenimientos registrados este mes.</li>
+            {% endfor %}
+        </ul>
+    </div>
+</body>
+</html>
