@@ -7,7 +7,7 @@ from django.contrib.auth import logout
 
 def cerrar_sesion(request):
     logout(request)
-    return redirect('/admin/login/')
+    return redirect('/')
 
 @login_required # Esto asegura que solo tú (o alguien logueado) pueda registrar mantenimientos
 def registrar_mantenimiento(request):
