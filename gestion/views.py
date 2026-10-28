@@ -128,7 +128,7 @@ def router_por_rol(request):
     elif user.username == 'secretaria_parque' or user.groups.filter(name='Secretaria').exists():
         return redirect('dashboard_caja')
     
-    elif user.groups.filter(name='Tecnico').exists():
+    elif user.groups.filter(name='tecnico').exists():
         return redirect('nuevo_mantenimiento')
     else:
         # Por defecto para el técnico (usuario 'tecnico')
