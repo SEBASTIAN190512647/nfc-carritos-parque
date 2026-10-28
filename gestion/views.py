@@ -98,6 +98,7 @@ def dashboard_general(request):
         return acceso
     fondos = FondoJefe.objects.all().order_by('-fecha')
     total_fondos = fondos.aggregate(Sum('monto'))['monto__sum'] or 0
+    total_ingresos = RegistroCaja.objects.aggregate(Sum('ingreso_bruto'))['ingreso_bruto__sum'] or 0
     sugerencias = Sugerencia.objects.all().order_by('-fecha')
     mantenimientos = Mantenimiento.objects.select_related('vehiculo', 'tecnico').order_by('-fecha')[:8]
     costo = ExpressionWrapper(F('costo_repuestos') + F('honorarios_tecnico'), output_field=DecimalField(max_digits=10, decimal_places=2))
@@ -105,6 +106,7 @@ def dashboard_general(request):
 
     return render(request, 'gestion/dashboard_general.html', {
         'total_fondos': total_fondos,
+        'total_ingresos': total_ingresos,
         'fondos': fondos,
         'sugerencias': sugerencias,
         'mantenimientos': mantenimientos,
@@ -150,14 +152,14 @@ def crear_fondo(request):
 
 @login_required
 def eliminar_fondo(request, pk):
-    if usuario_tiene_rol(request.user, 'Jefe', 'jefe_parque'):
+    if request.method == 'POST' and usuario_tiene_rol(request.user, 'Jefe', 'jefe_parque'):
         fondo = get_object_or_404(FondoJefe, pk=pk)
         fondo.delete()
     return redirect('dashboard_general')
 
 @login_required
 def eliminar_caja(request, pk):
-    if usuario_tiene_rol(request.user, 'Secretaria', 'secretaria_parque'):
+    if request.method == 'POST' and usuario_tiene_rol(request.user, 'Secretaria', 'secretaria_parque'):
         registro = get_object_or_404(RegistroCaja, pk=pk)
         registro.delete()
     return redirect('dashboard_caja')
