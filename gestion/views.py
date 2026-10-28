@@ -100,24 +100,18 @@ def crear_fondo(request):
 
 @login_required
 def router_por_rol(request):
-    """Enrutador maestro: redirige a la pantalla exacta según el usuario que ingresa"""
+    """Enrutador maestro: redirige seguro según el usuario"""
     user = request.user
     
-    # Si es el superusuario o admin, lo mandamos al panel de control general o administración
     if user.is_superuser or user.username == 'admin':
-        return redirect('/admin/') # O si prefieres al admin: redirect('/admin/')
-    
-    # Según el username exacto que definimos
+        return redirect('/admin/')
     elif user.username == 'jefe_parque' or user.groups.filter(name='Jefe').exists():
         return redirect('dashboard_general')
-        
     elif user.username == 'secretaria_parque' or user.groups.filter(name='Secretaria').exists():
         return redirect('dashboard_caja')
-    
-    elif user.groups.filter(name='tecnico_parque') or user.groups.filter(name='tecnico').exists():
-        return redirect('nuevo_mantenimiento')
     else:
-        return redirect('nuevo_mantenimiento')    
+        # Para el técnico u otros usuarios
+        return redirect('nuevo_mantenimiento') 
 
 
     
