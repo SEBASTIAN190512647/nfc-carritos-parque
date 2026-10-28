@@ -44,6 +44,10 @@
                                 </tr>
                                 {% empty %}
                                 <tr>
+                                    <td>
+                                        <a href="{% url 'eliminar_fondo' fondo.id %}" class="btn btn-danger btn-sm" onclick="return confirm('¿Seguro que deseas eliminar este fondo?');">🗑️</a>
+                                    </td>
+                                </tr>
                                     <td colspan="3" class="text-muted text-center"><small>No hay depósitos registrados aún.</small></td>
                                 </tr>
                                 {% endfor %}

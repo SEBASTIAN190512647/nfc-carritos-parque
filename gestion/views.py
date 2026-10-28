@@ -99,21 +99,37 @@ def crear_fondo(request):
     return redirect('dashboard_general')
 
 @login_required
+def eliminar_fondo(request, pk):
+    if request.user.groups.filter(name='Jefe').exists() or request.user.is_superuser:
+        fondo = FondoJefe.objects.get(pk=pk)
+        fondo.delete()
+    return redirect('dashboard_general')
+
+@login_required
+def eliminar_caja(request, pk):
+    if request.user.groups.filter(name='Secretaria').exists() or request.user.is_superuser:
+        registro = RegistroCaja.objects.get(pk=pk)
+        registro.delete()
+    return redirect('dashboard_caja')
+
+@login_required
 def router_por_rol(request):
     """Enrutador maestro: redirige a la pantalla exacta según el usuario que ingresa"""
     user = request.user
     
-    # Si es el superusuario o admin, lo mandamos al panel de control general o administración
+    # Si es el superusuario o admin, lo mandamos al panel de administración
     if user.is_superuser or user.username == 'admin':
-        return redirect('dashboard_general') # O si prefieres al admin: redirect('/admin/')
-    
-    # Según el username exacto que definimos
+        return redirect('/admin/')
+
+    # Según el username o grupo que definimos
     elif user.username == 'jefe_parque' or user.groups.filter(name='Jefe').exists():
         return redirect('dashboard_general')
-        
+
     elif user.username == 'secretaria_parque' or user.groups.filter(name='Secretaria').exists():
         return redirect('dashboard_caja')
-        
+    
+    elif user.groups.filter(name='Tecnico').exists():
+        return redirect('nuevo_mantenimiento')
     else:
         # Por defecto para el técnico (usuario 'tecnico')
         return redirect('nuevo_mantenimiento')

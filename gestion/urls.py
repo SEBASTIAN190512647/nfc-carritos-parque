@@ -7,6 +7,8 @@ urlpatterns = [
     path('dashboard/', views.dashboard_general, name='dashboard_general'),
     path('sugerencia/nueva/', views.crear_sugerencia, name='crear_sugerencia'),
     path('fondo/nuevo/', views.crear_fondo, name='crear_fondo'),
+    path('fondo/eliminar/<int:pk>/', views.eliminar_fondo, name='eliminar_fondo'),
+    path('caja/eliminar/<int:pk>/', views.eliminar_caja, name='eliminar_caja'),
     path('dashboard/', views.router_por_rol, name='dashboard_general'),
     path('logout/', views.cerrar_sesion, name='logout'),
 ]
