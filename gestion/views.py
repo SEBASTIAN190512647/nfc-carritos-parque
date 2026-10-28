@@ -100,19 +100,17 @@ def crear_fondo(request):
 
 @login_required
 def router_por_rol(request):
-    """Enrutador maestro: redirige seguro según el usuario"""
+    """Enrutador seguro sin bucles"""
     user = request.user
     
     if user.is_superuser or user.username == 'admin':
         return redirect('/admin/')
     elif user.username == 'jefe_parque' or user.groups.filter(name='Jefe').exists():
-        return redirect('dashboard_general')
+        return render(request, 'gestion/dashboard_general.html')
     elif user.username == 'secretaria_parque' or user.groups.filter(name='Secretaria').exists():
-        return redirect('dashboard_caja')
+        return render(request, 'gestion/dashboard_caja.html')
     else:
-        # Para el técnico u otros usuarios
-        return redirect('nuevo_mantenimiento') 
-
+        return redirect('nuevo_mantenimiento')
 
     
    
