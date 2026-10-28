@@ -100,17 +100,33 @@ def crear_fondo(request):
 
 @login_required
 def router_por_rol(request):
-    """Enrutador seguro sin bucles"""
+    """Enrutador maestro: redirige a la pantalla exacta según el usuario que ingresa"""
+    user = request.user
+    
+    # Si es el superusuario o admin, lo mandamos al panel de control general o administración
+    if user.is_superuser or user.username == 'admin':
+        return redirect('/admin/') # O si prefieres al admin: redirect('/admin/')
+    
+    # Según el username exacto que definimos
+    elif user.username == 'jefe_parque' or user.groups.filter(name='Jefe').exists():
+        return redirect('dashboard_general')
+        
+    elif user.username == 'secretaria_parque' or user.groups.filter(name='Secretaria').exists():
+        return redirect('dashboard_caja')
+        
+    else:
+        # Por defecto para el técnico (usuario 'tecnico')
+        return redirect('nuevo_mantenimiento')
+@login_required
+def router_por_rol(request):
+    """Enruta a cada usuario a su interfaz exclusiva según su grupo"""
     user = request.user
     
     if user.is_superuser or user.username == 'admin':
-        return redirect('/admin/')
-    elif user.username == 'jefe_parque' or user.groups.filter(name='Jefe').exists():
-        return render(request, 'gestion/dashboard_general.html')
-    elif user.username == 'secretaria_parque' or user.groups.filter(name='Secretaria').exists():
-        return render(request, 'gestion/dashboard_caja.html')
+        return redirect('/admin/') # El admin va directo al panel de control de Django
+
+        return redirect('dashboard_caja')
+    elif user.groups.filter(name='Tecnico').exists():
+        return redirect('nuevo_mantenimiento')
     else:
         return redirect('nuevo_mantenimiento')
-
-    
-   
